@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  harvest_date: 2022-05-04 23:49:45
+  appointment: one
+
+two:
+  harvest_date: 2022-05-04 23:49:45
+  appointment: two
