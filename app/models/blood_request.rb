@@ -6,5 +6,5 @@ class BloodRequest < ApplicationRecord
   belongs_to :blood_type
   has_many :appointments
   validates :code, presence: true, uniqueness: true
-  validates :datetime, presence: true
+  validates :date_time, presence: true
 end
