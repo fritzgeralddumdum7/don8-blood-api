@@ -12,11 +12,13 @@ module Api
     def create
       @organization = Organization.new(organization_params)
       
-      if @organization.save
-        render json: @organization
-      else
-        render json: {"Error":400}
+      begin
+          @organization.save
+          render json: @organization       
+      rescue => exception
+        render json: exception
       end
+      
     end
   
     def update
@@ -35,7 +37,7 @@ module Api
     private
 
     def organization_params
-        params.require(:organization).permit(:name, :address, :city_municipality_id )
+        params.require(:organization).permit(:name, :address, :city_municipality_id, :organization_type_id )
     end
   end
 end
