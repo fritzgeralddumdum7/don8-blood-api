@@ -15,7 +15,7 @@ module Api
       if @blood_request.save
         render json: @blood_request
       else
-        render json: {"Error":400}
+        render json: @blood_request.errors
       end
     end
   
@@ -25,7 +25,7 @@ module Api
       if @blood_request.update(blood_request_params)
         render json: @blood_request
       else
-        render json: {"Error":400}
+        render json: @blood_request.errors
       end
     end
   
@@ -35,7 +35,7 @@ module Api
     private
 
     def blood_request_params
-        params.require(:organization).permit(:code, 
+        params.require(:blood_request).permit(:code, 
                                             :date_time, 
                                             :user_id, 
                                             :case_id, 
