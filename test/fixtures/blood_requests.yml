@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  date_time: 2022-05-04 23:49:05
+  user: one
+  case: one
+  organization: one
+  request_type: one
+  blood_type: one
+
+two:
+  code: MyString
+  date_time: 2022-05-04 23:49:05
+  user: two
+  case: two
+  organization: two
+  request_type: two
+  blood_type: two

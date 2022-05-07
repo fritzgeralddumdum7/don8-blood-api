@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: MyString
+  password: MyString
+  firstname: MyString
+  middlename: MyString
+  lastname: MyString
+  birthday: 2022-05-04
+  address: MyText
+  availability_status: 1
+  mobile_no: MyString
+  blood_type: one
+  longitude: 1.5
+  latitude: 1.5
+
+two:
+  email: MyString
+  password: MyString
+  firstname: MyString
+  middlename: MyString
+  lastname: MyString
+  birthday: 2022-05-04
+  address: MyText
+  availability_status: 1
+  mobile_no: MyString
+  blood_type: two
+  longitude: 1.5
+  latitude: 1.5
