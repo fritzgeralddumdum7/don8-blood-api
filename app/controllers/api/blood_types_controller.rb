@@ -5,8 +5,8 @@ module Api
     end
 
     def show
-      @blood_type = BloodType.find(params[:id])
-      render json: @blood_type
+      blood_type = BloodType.find(params[:id])
+      render json: blood_type
     end
   end
 end

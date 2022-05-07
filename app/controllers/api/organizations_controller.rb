@@ -1,7 +1,7 @@
 module Api
   class OrganizationsController < ApplicationController
     def index
-      @organizations = Organization.joins(:organization_type, :city_municipality).select("organizations.id,
+      organizations = Organization.joins(:organization_type, :city_municipality).select("organizations.id,
         organizations.name as organization_name,
         organization_types.name as organization_type_name,
         city_municipalities.name as city_municipality_name,
@@ -10,32 +10,32 @@ module Api
 
       options={}
       options[:meta] = {total: Organization.count}
-      render json:  OrganizationSerializer.new(@organizations, options)
+      render json:  OrganizationSerializer.new(organizations, options)
     end
   
     def show
-      @organization = Organization.find(params[:id])
-      render json: @organization
+      organization = Organization.find(params[:id])
+      render json: organization
     end
   
     def create
-      @organization = Organization.new(organization_params)
+      organization = Organization.new(organization_params)
       
-      if @organization.save
-        render json: @organization
+      if organization.save
+        render json: organization
       else
-        render json: @organization.errors
+        render json: organization.errors
       end
       
     end
   
     def update
-      @organization = Organization.find(params[:id])
+      organization = Organization.find(params[:id])
 
-      if @organization.update(organization_params)
-        render json: @organization
+      if organization.update(organization_params)
+        render json: organization
       else
-        render json: @organization.errors
+        render json: organization.errors
       end
     end
   
