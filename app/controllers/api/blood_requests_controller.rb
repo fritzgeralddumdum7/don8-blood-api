@@ -1,7 +1,17 @@
 module Api
   class BloodRequestsController < ApplicationController
     def index
-      render json: BloodRequest.all
+      @blood_requests = BloodRequest.joins(:user,:case, :request_type, :blood_type).joins(:organization => :city_municipality).select("blood_requests.id,
+        blood_requests.code,
+        blood_requests.date_time,
+        users.firstname as patient_name,
+        organizations.name as organization_name,
+        city_municipalities.name as city_municipality_name,
+        cases.name as case_name,
+        request_types.name as request_type_name,
+        blood_types.name as blood_type_name").uniq
+
+      render json: BloodRequestSerializer.new(@blood_requests)
     end
   
     def show

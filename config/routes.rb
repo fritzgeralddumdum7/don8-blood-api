@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   namespace :api do
     get 'test', to: 'tests#index'
     resources :blood_types
-    resources :organizations
+    resources :organizations do
+      resources :blood_requests
+    end
     resources :blood_requests
   end
 end

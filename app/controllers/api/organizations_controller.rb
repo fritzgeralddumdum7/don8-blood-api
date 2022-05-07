@@ -1,7 +1,16 @@
 module Api
   class OrganizationsController < ApplicationController
     def index
-        render json: Organization.all      
+      @organizations = Organization.joins(:organization_type, :city_municipality).select("organizations.id,
+        organizations.name as organization_name,
+        organization_types.name as organization_type_name,
+        city_municipalities.name as city_municipality_name,
+        city_municipalities.latitude,
+        city_municipalities.longitude").uniq
+
+      options={}
+      options[:meta] = {total: Organization.count}
+      render json:  OrganizationSerializer.new(@organizations, options)
     end
   
     def show
