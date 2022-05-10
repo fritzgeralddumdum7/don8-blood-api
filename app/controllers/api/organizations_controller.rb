@@ -8,7 +8,9 @@ module Api
       city_municipalities.name as city_municipality_name,
       city_municipalities.latitude,
       city_municipalities.longitude,
-      provinces.name as province_name").joins(:organization_type).joins(:city_municipality => :province).uniq
+      provinces.name as province_name")
+      .joins(:organization_type)
+      .joins(:city_municipality => :province).uniq
         
       if get_city_municipality_id == nil || get_city_municipality_id == 0
         organizations = all_organizations      
@@ -53,7 +55,10 @@ module Api
     private
 
     def organization_params
-        params.require(:organization).permit(:name, :address, :city_municipality_id, :organization_type_id)
+        params.require(:organization).permit(:name, 
+          :address, 
+          :city_municipality_id, 
+          :organization_type_id)
     end
 
     def get_city_municipality_id
@@ -67,7 +72,10 @@ module Api
       city_municipalities.name as city_municipality_name,
       city_municipalities.latitude,
       city_municipalities.longitude,
-      provinces.name as province_name").joins(:organization_type).joins(:city_municipality => :province).where(:id => id)
+      provinces.name as province_name")
+      .joins(:organization_type)
+      .joins(:city_municipality => :province)
+      .where(:id => id)
       
       OrganizationSerializer.new(organization)
     end
