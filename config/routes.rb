@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resources :blood_requests
     end
     resources :blood_requests
+    resources :appointments
     resources :city_municipalities
     resources :provinces
   end
