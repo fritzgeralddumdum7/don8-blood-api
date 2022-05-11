@@ -5,6 +5,7 @@ module Api
         blood_requests.code,
         blood_requests.date_time,
         users.firstname as patient_name,
+        organizations.id as organization_id,
         organizations.name as organization_name,
         city_municipalities.id as city_municipality_id,
         city_municipalities.name as city_municipality_name,
@@ -15,12 +16,19 @@ module Api
         .joins(:user,:case, :request_type, :blood_type)
         .joins(:organization => :city_municipality).uniq
 
+      #Requests per blood type  
       if get_blood_type_id != nil && get_blood_type_id != 0
         blood_requests = all_blood_requests.find_all{|obj| obj.blood_type_id == get_blood_type_id}
       
+      #Requests per city/municipality  
       elsif get_city_municipality_id != nil && get_city_municipality_id != 0
         blood_requests = all_blood_requests.find_all{|obj| obj.city_municipality_id == get_city_municipality_id}
       
+      #Requests per organization
+      elsif get_organization_id != nil && get_organization_id != 0
+        blood_requests = all_blood_requests.find_all{|obj| obj.organization_id == get_organization_id}
+
+      #All Requests   
       else
         blood_requests = all_blood_requests        
       end  
@@ -75,6 +83,10 @@ module Api
 
     def get_blood_type_id
       params[:blood_type_id].to_i
+    end
+
+    def get_organization_id
+      params[:organization_id].to_i
     end
 
     def serialize_blood_request(id)
