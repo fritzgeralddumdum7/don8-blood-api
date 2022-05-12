@@ -45,6 +45,9 @@ module Api
     def create
       blood_request = BloodRequest.new(blood_request_params)
       
+      d = DateTime.now
+      blood_request.code = d.strftime("%Y%m%d%H%M%s")
+      
       if blood_request.save
         render json: serialize_blood_request(blood_request.id)
       else
@@ -68,8 +71,7 @@ module Api
     private
 
     def blood_request_params
-        params.require(:blood_request).permit(:code, 
-          :date_time, 
+        params.require(:blood_request).permit(:date_time, 
           :user_id, 
           :case_id, 
           :organization_id, 

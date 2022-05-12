@@ -2,7 +2,7 @@ module Api
   class OrganizationsController < ApplicationController
     def index
       all_organizations = Organization.select("organizations.id,
-      organizations.name as organization_name,
+      organizations.name,
       organization_types.name as organization_type_name,
       city_municipalities.id as city_municipality_id,
       city_municipalities.name as city_municipality_name,
@@ -67,7 +67,7 @@ module Api
 
     def serialize_organization(id)
       organization = Organization.select("organizations.id,
-      organizations.name as organization_name,
+      organizations.name,
       organization_types.name as organization_type_name,
       city_municipalities.name as city_municipality_name,
       city_municipalities.latitude,

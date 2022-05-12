@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'request_types/index'
   get 'appointments/index'
   get 'appointments/show'
   get 'appointments/create'
@@ -12,6 +13,8 @@ Rails.application.routes.draw do
   namespace :api do
     get 'test', to: 'tests#index'
     resources :blood_types
+    resources :request_types
+    resources :cases
     resources :donations
     resources :organizations do
       resources :blood_requests
