@@ -46,7 +46,7 @@ module Api
       blood_request = BloodRequest.new(blood_request_params)
       
       d = DateTime.now
-      blood_request.code = d.strftime("%Y%m%d%H%M%s")
+      blood_request.code = d.strftime("%Y%m%d%H%M")
       
       if blood_request.save
         render json: serialize_blood_request(blood_request.id)
