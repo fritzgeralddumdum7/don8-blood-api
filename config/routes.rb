@@ -1,14 +1,16 @@
 Rails.application.routes.draw do
-  get 'request_types/index'
-  get 'appointments/index'
-  get 'appointments/show'
-  get 'appointments/create'
-  get 'appointments/update'
-  get 'appointments/destroy'
-  get 'provinces/index'
-  get 'provinces/show'
-  get 'city_municipalities/index'
-  get 'city_municipalities/show'
+  devise_for :users,
+  defaults: { format: :json },
+  path: 'api',
+  path_names: {
+    sign_in: '/login',
+    sign_out: '/logout',
+    registration: '/signup'
+  },
+  controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     get 'test', to: 'tests#index'
