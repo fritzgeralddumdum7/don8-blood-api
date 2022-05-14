@@ -1,18 +1,21 @@
 module Api
   class BloodRequestsController < ApplicationController
+    @@query = "blood_requests.id,
+    blood_requests.code,
+    blood_requests.date_time,
+    blood_requests.user_id,
+    users.firstname as patient_name,
+    organizations.name as organization_name,
+    city_municipalities.name as city_municipality_name,
+    cases.id as case_id,
+    cases.name as case_name,
+    request_types.id as request_type_id,
+    request_types.name as request_type_name,
+    blood_types.id as blood_type_id,
+    blood_types.name as blood_type_name"
+
     def index
-      all_blood_requests = BloodRequest.select("blood_requests.id,
-        blood_requests.code,
-        blood_requests.date_time,
-        users.firstname as patient_name,
-        organizations.id as organization_id,
-        organizations.name as organization_name,
-        city_municipalities.id as city_municipality_id,
-        city_municipalities.name as city_municipality_name,
-        cases.name as case_name,
-        request_types.name as request_type_name,
-        blood_types.id as blood_type_id,
-        blood_types.name as blood_type_name")
+      all_blood_requests = BloodRequest.select(@@query)
         .joins(:user,:case, :request_type, :blood_type)
         .joins(:organization => :city_municipality).uniq
 
@@ -92,15 +95,7 @@ module Api
     end
 
     def serialize_blood_request(id)
-      blood_request = BloodRequest.select("blood_requests.id,
-        blood_requests.code,
-        blood_requests.date_time,
-        users.firstname as patient_name,
-        organizations.name as organization_name,
-        city_municipalities.name as city_municipality_name,
-        cases.name as case_name,
-        request_types.name as request_type_name,
-        blood_types.name as blood_type_name")
+      blood_request = BloodRequest.select(@@query)
         .joins(:user,:case, :request_type, :blood_type)
         .joins(:organization => :city_municipality)
         .where(:id => id)
