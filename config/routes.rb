@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get 'test', to: 'tests#index'
     resources :blood_types
     resources :request_types
+    resources :organization_types
     resources :cases
     resources :donations
     resources :organizations do

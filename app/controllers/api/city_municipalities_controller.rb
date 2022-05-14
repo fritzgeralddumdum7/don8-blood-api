@@ -1,10 +1,12 @@
 module Api
   class CityMunicipalitiesController < ApplicationController
+    @@query = "city_municipalities.id,
+    city_municipalities.name,
+    provinces.id as province_id,
+    provinces.name as province_name"
+
     def index
-      all_cities_municipalities = CityMunicipality.select("city_municipalities.id,
-      city_municipalities.name as city_municipality_name,
-      provinces.id as province_id,
-      provinces.name as province_name").joins(:province).uniq
+      all_cities_municipalities = CityMunicipality.select(@@query).joins(:province).uniq
      
       if get_province_id == nil || get_province_id == 0
         city_municipalities = all_cities_municipalities
@@ -28,10 +30,7 @@ module Api
     end
 
     def serialize_city_municipality(id)
-      city_municipality = CityMunicipality.select("city_municipalities.id,
-      city_municipalities.name as city_municipality_name,
-      provinces.id as province_id,
-      provinces.name as province_name").joins(:province).where(:id => id)
+      city_municipality = CityMunicipality.select(@@query).joins(:province).where(:id => id)
 
       CityMunitipalitySerializer.new(city_municipality)
     end   
