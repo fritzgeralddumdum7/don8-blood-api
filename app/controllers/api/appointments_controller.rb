@@ -7,9 +7,13 @@ module Api
       appointments.user_id,
       CONCAT(users.firstname, ' ', users.lastname) as donor_name,
       organizations.id as organization_id,
-      organizations.name as organization_name"
+      organizations.name as organization_name,
+      request_types.name as request_type_name,
+      cases.name as case_name"
     ).joins(:blood_request => :blood_type)
     .joins(:blood_request => :organization)
+    .joins(:blood_request => :request_type)
+    .joins(:blood_request => :case)
     .joins(:user).uniq
          
       if get_user_id != nil && get_user_id != 0
@@ -64,9 +68,13 @@ module Api
         blood_types.name as blood_type_name,
         appointments.user_id,
         CONCAT(users.firstname, ' ', users.lastname) as donor_name,
-        organizations.name as organization_name"
+        organizations.name as organization_name,
+        request_types.name as request_type_name,
+        cases.name as case_name"
       ).joins(:blood_request => :blood_type)
       .joins(:blood_request => :organization)
+      .joins(:blood_request => :request_type)
+      .joins(:blood_request => :case)
       .joins(:user)
       .where(:id => id)
 

@@ -1,14 +1,17 @@
 module Api
   class OrganizationsController < ApplicationController
+    @@query = "organizations.id,
+    organizations.name,
+    organization_types.id as organization_type_id,
+    organization_types.name as organization_type_name,
+    city_municipalities.id as city_municipality_id,
+    city_municipalities.name as city_municipality_name,
+    city_municipalities.latitude,
+    city_municipalities.longitude,
+    provinces.name as province_name"
+
     def index
-      all_organizations = Organization.select("organizations.id,
-      organizations.name,
-      organization_types.name as organization_type_name,
-      city_municipalities.id as city_municipality_id,
-      city_municipalities.name as city_municipality_name,
-      city_municipalities.latitude,
-      city_municipalities.longitude,
-      provinces.name as province_name")
+      all_organizations = Organization.select(@@query)
       .joins(:organization_type)
       .joins(:city_municipality => :province).uniq
         
@@ -66,13 +69,7 @@ module Api
     end
 
     def serialize_organization(id)
-      organization = Organization.select("organizations.id,
-      organizations.name,
-      organization_types.name as organization_type_name,
-      city_municipalities.name as city_municipality_name,
-      city_municipalities.latitude,
-      city_municipalities.longitude,
-      provinces.name as province_name")
+      organization = Organization.select(@@query)
       .joins(:organization_type)
       .joins(:city_municipality => :province)
       .where(:id => id)
