@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_12_120707) do
+ActiveRecord::Schema.define(version: 2022_05_14_225641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,9 +75,10 @@ ActiveRecord::Schema.define(version: 2022_05_12_120707) do
     t.index ["appointment_id"], name: "index_donations_on_appointment_id"
   end
 
-  create_table "jwt_deny_lists", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+  create_table "jwt_denylist", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", null: false
+    t.index ["jti"], name: "index_jwt_denylist_on_jti"
   end
 
   create_table "organization_types", force: :cascade do |t|
