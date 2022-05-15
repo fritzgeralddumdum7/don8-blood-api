@@ -1,5 +1,5 @@
 class BloodRequest < ApplicationRecord
-  # belongs_to :user
+  belongs_to :user
   belongs_to :case
   belongs_to :organization
   belongs_to :request_type

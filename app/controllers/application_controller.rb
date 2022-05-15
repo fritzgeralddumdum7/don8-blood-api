@@ -20,7 +20,6 @@ class ApplicationController < ActionController::API
                 :firstname,
                 :lastname,
                 :birthday,
-                :city,
                 :middlename,
                 :address
             ]
