@@ -7,12 +7,10 @@ Rails.application.routes.draw do
     resources :organization_types
     resources :cases
     resources :donations
-    resources :organizations do
-      resources :blood_requests
-    end
+    resources :organizations
     resources :blood_requests
     resources :appointments
     resources :city_municipalities
-    resources :provinces
+    resources :provinces    
   end
 end
