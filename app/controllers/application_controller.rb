@@ -13,6 +13,16 @@ class ApplicationController < ActionController::API
     protected
 
     def configure_permitted_parameters
-        devise_parameter_sanitizer.permit(:sign_up, keys: [:blood_type_id])
+        devise_parameter_sanitizer.permit(:sign_up, keys: [
+                :blood_type_id,
+                :email,
+                :password,
+                :firstname,
+                :lastname,
+                :birthday,
+                :middlename,
+                :address
+            ]
+        )
     end
 end
