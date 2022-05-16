@@ -4,4 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
   belongs_to :blood_type
+  validates :email, uniqueness: {
+    message: "Email already exist"
+  }
 end

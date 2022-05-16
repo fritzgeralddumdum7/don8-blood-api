@@ -21,7 +21,9 @@ class ApplicationController < ActionController::API
                 :lastname,
                 :birthday,
                 :middlename,
-                :address
+                :address,
+                :role,
+                :city_municipality_id
             ]
         )
     end
