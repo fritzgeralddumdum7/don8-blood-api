@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :blood_requests
     resources :appointments
     resources :city_municipalities
-    resources :provinces    
+    resources :provinces   
+    resources :users 
   end
 end
