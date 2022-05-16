@@ -1,16 +1,19 @@
 module Api
   class AppointmentsController < ApplicationController
+    @@query = "appointments.id,
+    appointments.date_time,
+    blood_types.name as blood_type_name,
+    appointments.user_id,
+    CONCAT(users.firstname, ' ', users.lastname) as donor_name,
+    organizations.id as organization_id,
+    organizations.name as organization_name,
+    request_types.name as request_type_name,
+    cases.name as case_name,
+    blood_requests.id as blood_request_id"
+
     def index
-      all_appointments = Appointment.select("appointments.id,
-      appointments.date_time,
-      blood_types.name as blood_type_name,
-      appointments.user_id,
-      CONCAT(users.firstname, ' ', users.lastname) as donor_name,
-      organizations.id as organization_id,
-      organizations.name as organization_name,
-      request_types.name as request_type_name,
-      cases.name as case_name"
-    ).joins(:blood_request => :blood_type)
+      all_appointments = Appointment.select(@@query)
+      .joins(:blood_request => :blood_type)
     .joins(:blood_request => :organization)
     .joins(:blood_request => :request_type)
     .joins(:blood_request => :case)
@@ -33,6 +36,8 @@ module Api
   
     def create
       appointment = Appointment.new(appointment_params)
+      appointment.is_completed = false
+      appointment.status = 1
 
       if appointment.save
         render json: appointment
@@ -42,6 +47,13 @@ module Api
     end
   
     def update
+      appointment = Appointment.find(params[:id])
+
+      if appointment.update(appointment_params)
+        render json: serialize_appointment(appointment.id)
+      else
+        render json: {errors: appointment.errors}
+      end
     end
   
     def destroy
@@ -63,15 +75,8 @@ module Api
     end
 
     def serialize_appointment(id)
-      appointment = Appointment.select("appointments.id,
-        appointments.date_time,
-        blood_types.name as blood_type_name,
-        appointments.user_id,
-        CONCAT(users.firstname, ' ', users.lastname) as donor_name,
-        organizations.name as organization_name,
-        request_types.name as request_type_name,
-        cases.name as case_name"
-      ).joins(:blood_request => :blood_type)
+      appointment = Appointment.select(@@query)
+      .joins(:blood_request => :blood_type)
       .joins(:blood_request => :organization)
       .joins(:blood_request => :request_type)
       .joins(:blood_request => :case)
