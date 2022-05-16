@@ -1,5 +1,7 @@
 module Api
   class BloodTypesController < ApplicationController
+    skip_before_action :authenticate_user!
+
     def index
       render json: BloodTypeSerializer.new(BloodType.all)
     end

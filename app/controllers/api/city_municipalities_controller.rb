@@ -1,5 +1,6 @@
 module Api
   class CityMunicipalitiesController < ApplicationController
+    skip_before_action :authenticate_user!
     @@query = "city_municipalities.id,
     city_municipalities.name,
     provinces.id as province_id,
@@ -34,6 +35,5 @@ module Api
 
       CityMunitipalitySerializer.new(city_municipality)
     end   
-
   end  
 end
