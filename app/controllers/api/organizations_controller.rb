@@ -1,5 +1,7 @@
 module Api
   class OrganizationsController < ApplicationController
+    skip_before_action :authenticate_user!
+    
     @@query = "organizations.id,
     organizations.name,
     organization_types.id as organization_type_id,

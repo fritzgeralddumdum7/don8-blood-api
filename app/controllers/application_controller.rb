@@ -23,7 +23,8 @@ class ApplicationController < ActionController::API
                 :middlename,
                 :address,
                 :role,
-                :city_municipality_id
+                :city_municipality_id,
+                :organization_id
             ]
         )
     end
