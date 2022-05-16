@@ -2,7 +2,7 @@ module Api
   class AppointmentsController < ApplicationController
     @@query = "appointments.id,
     appointments.date_time,
-    blood_request_id,
+    blood_request_id as blood_request_id,
     blood_types.name as blood_type_name,
     appointments.user_id,
     CONCAT(users.firstname, ' ', users.lastname) as donor_name,
@@ -36,6 +36,8 @@ module Api
   
     def create
       appointment = Appointment.new(appointment_params)
+      appointment.is_completed = false
+      appointment.status = 1
 
       if appointment.save
         render json: appointment
