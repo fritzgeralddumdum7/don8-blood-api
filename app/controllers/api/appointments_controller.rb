@@ -2,7 +2,9 @@ module Api
   class AppointmentsController < ApplicationController
     @@query = "appointments.id,
     appointments.date_time,
+    appointments.is_completed,
     blood_request_id as blood_request_id,
+    blood_requests.code as blood_request_code,
     blood_types.name as blood_type_name,
     appointments.user_id,
     CONCAT(users.firstname, ' ', users.lastname) as donor_name,
@@ -56,6 +58,11 @@ module Api
       end
     end
   
+    def complete
+      appointment = Appointment.find(params[:id])
+      appointment.update is_completed: true
+    end
+
     def destroy
     end
 
