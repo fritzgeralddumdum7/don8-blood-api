@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   }
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
-    get 'test', to: 'tests#index'
+    get '/profile', to: 'users#profile'
+    post '/validate-password', to: 'users#validate_password'
+    put '/update-password', to: 'users#update_password'
     resources :blood_types
     resources :request_types
     resources :organization_types
