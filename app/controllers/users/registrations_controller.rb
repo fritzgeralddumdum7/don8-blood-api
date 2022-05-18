@@ -24,7 +24,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # PUT /resource
   def update
-    byebug
     user = User.find(current_user.id)
     if user.update(user_params)
       render_json_api_response(user)
