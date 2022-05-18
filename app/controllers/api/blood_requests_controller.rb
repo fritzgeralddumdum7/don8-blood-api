@@ -5,6 +5,7 @@ module Api
     blood_requests.date_time,
     blood_requests.user_id,
     users.firstname as patient_name,
+    blood_requests.organization_id,
     organizations.name as organization_name,
     city_municipalities.name as city_municipality_name,
     cases.id as case_id,
@@ -81,6 +82,8 @@ module Api
     end
   
     def destroy
+      blood_request = BloodRequest.find(params[:id])
+      blood_request.destroy
     end
 
     private
@@ -114,6 +117,7 @@ module Api
       blood_request = BloodRequest.select(@@query)
         .joins(:user,:case, :request_type, :blood_type)
         .joins(:organization => :city_municipality)
+        .joins("LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id")
         .where(:id => id)
 
         BloodRequestSerializer.new(blood_request)

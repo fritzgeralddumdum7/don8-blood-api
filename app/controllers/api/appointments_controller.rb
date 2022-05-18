@@ -7,23 +7,22 @@ module Api
       .joins(:blood_request => :request_type)
       .joins(:blood_request => :case)
       .joins(:user).uniq
-         
-      # Appointments per user/donor
-      if get_user_id != nil && get_user_id != 0
-        appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id }
-
-      #Appointments per org
-      elsif get_organization_id !=nil && get_organization_id !=0
-        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id }
       
       # Completed Appointments per User
-      elsif get_user_id != nil && get_user_id != 0 && get_is_completed != nil && get_is_completed != 0
+      if get_user_id != nil && get_user_id != 0 && get_is_completed != nil && get_is_completed != 0
       appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id && obj.is_completed == get_is_completed }
 
       # Completed Appointments per Org
       elsif get_organization_id !=nil && get_organization_id !=0 && get_is_completed != nil && get_is_completed != 0
         appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.is_completed == get_is_completed }
       
+      # All Appointments per user/donor
+      elsif get_user_id != nil && get_user_id != 0
+        appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id }
+
+      #All Appointments per org
+      elsif get_organization_id !=nil && get_organization_id !=0
+        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id }
       else
         appointments = all_appointments
       end
@@ -85,7 +84,7 @@ module Api
     end
 
     def get_is_completed
-      params[:is_completed].nil? ? nil : params[:is_completed].to_boolean
+      params[:is_completed].nil? ? nil : to_boolean(params[:is_completed])
     end
 
     def serialize_appointment(id)
