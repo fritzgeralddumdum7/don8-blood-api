@@ -83,7 +83,14 @@ module Api
   
     def destroy
       blood_request = BloodRequest.find(params[:id])
-      blood_request.destroy
+      
+      begin
+        blood_request.destroy
+        render json: {status: "Successful"}
+      rescue ActiveRecord::InvalidForeignKey => e
+        render json: {errors: {message: e.class.name}}
+      end
+      
     end
 
     private
