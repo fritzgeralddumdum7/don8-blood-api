@@ -22,7 +22,7 @@ module Api
 
       #All Appointments per org
       elsif get_organization_id !=nil && get_organization_id !=0
-        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id }
+        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.status == 1 }
       else
         appointments = all_appointments
       end

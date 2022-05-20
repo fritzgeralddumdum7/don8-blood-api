@@ -7,9 +7,14 @@ module Api
               CONCAT(users.firstname,' ', users.lastname) as name,
               users.blood_type_id,
               blood_types.name as blood_type_name,
-              role")
+              role,
+              city_municipalities.name as city_municipality_name,
+              provinces.name as province_name")
               .joins(:blood_type)
+              .left_outer_joins(:city_municipality => :province)
               .where(role: get_role)
+
+              #.joins("LEFT JOIN provinces ON provinces.id = city_municipalities.province_id")
       
             # options={}
             # options[:meta] = {total: all_users.count}
