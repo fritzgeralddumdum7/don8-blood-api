@@ -1,26 +1,28 @@
 module Api
   class AppointmentsController < ApplicationController
-    @@query = "appointments.id,
-    appointments.date_time,
-    blood_request_id as blood_request_id,
-    blood_types.name as blood_type_name,
-    appointments.user_id,
-    CONCAT(users.firstname, ' ', users.lastname) as donor_name,
-    organizations.id as organization_id,
-    organizations.name as organization_name,
-    request_types.name as request_type_name,
-    cases.name as case_name"
-
-    def index
-      all_appointments = Appointment.select(@@query)
+   def index
+      all_appointments = Appointment.select(Appointment.apibody)
       .joins(:blood_request => :blood_type)
       .joins(:blood_request => :organization)
       .joins(:blood_request => :request_type)
       .joins(:blood_request => :case)
       .joins(:user).uniq
-         
-      if get_user_id != nil && get_user_id != 0
+      
+      # Completed Appointments per User
+      if get_user_id != nil && get_user_id != 0 && get_is_completed != nil && get_is_completed != 0
+      appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id && obj.is_completed == get_is_completed }
+
+      # Completed Appointments per Org
+      elsif get_organization_id !=nil && get_organization_id !=0 && get_is_completed != nil && get_is_completed != 0
+        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.is_completed == get_is_completed }
+      
+      # All Appointments per user/donor
+      elsif get_user_id != nil && get_user_id != 0
         appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id }
+
+      #All Appointments per org
+      elsif get_organization_id !=nil && get_organization_id !=0
+        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id }
       else
         appointments = all_appointments
       end
@@ -56,6 +58,11 @@ module Api
       end
     end
   
+    def complete
+      appointment = Appointment.find(params[:id])
+      appointment.update is_completed: true
+    end
+
     def destroy
     end
 
@@ -72,8 +79,16 @@ module Api
       params[:user_id].to_i
     end
 
+    def get_organization_id
+      params[:organization_id].to_i
+    end
+
+    def get_is_completed
+      params[:is_completed].nil? ? nil : to_boolean(params[:is_completed])
+    end
+
     def serialize_appointment(id)
-      appointment = Appointment.select(@@query)
+      appointment = Appointment.select(Appointment.apibody)
       .joins(:blood_request => :blood_type)
       .joins(:blood_request => :organization)
       .joins(:blood_request => :request_type)

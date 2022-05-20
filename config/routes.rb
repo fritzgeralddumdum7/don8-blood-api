@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   }
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
-    get 'test', to: 'tests#index'
+    get '/profile', to: 'users#profile'
+    post '/validate-password', to: 'users#validate_password'
+    put '/update-password', to: 'users#update_password'
     resources :blood_types
     resources :request_types
     resources :organization_types
@@ -23,6 +25,9 @@ Rails.application.routes.draw do
     resources :blood_requests
     resources :appointments
     resources :city_municipalities
-    resources :provinces    
+    resources :provinces   
+    resources :users 
+    patch 'blood_requests/:id/close', to: 'blood_requests#close', as: 'close_blood_request'
+    patch 'appointments/:id/complete', to: 'appointments#complete', as: 'complete_appointment'
   end
 end

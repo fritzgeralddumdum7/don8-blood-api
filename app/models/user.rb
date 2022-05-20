@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
   belongs_to :blood_type, optional: true
   belongs_to :organization, optional: true
+  belongs_to :city_municipality
   validates :email, uniqueness: {
     message: "Email already exist"
   }
