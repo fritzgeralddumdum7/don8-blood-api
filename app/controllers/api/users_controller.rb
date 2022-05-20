@@ -5,7 +5,11 @@ module Api
         def index
             all_users = User.select("users.id,
               CONCAT(users.firstname,' ', users.lastname) as name,
-              role").where(role: get_role)
+              users.blood_type_id,
+              blood_types.name as blood_type_name,
+              role")
+              .joins(:blood_type)
+              .where(role: get_role)
       
             # options={}
             # options[:meta] = {total: all_users.count}

@@ -7,6 +7,7 @@ class Appointment < ApplicationRecord
     "appointments.id,
     appointments.date_time,
     appointments.is_completed,
+    appointments.status,
     blood_request_id as blood_request_id,
     blood_requests.code as blood_request_code,
     blood_types.name as blood_type_name,

@@ -57,7 +57,7 @@ module Api
       blood_request = BloodRequest.new(blood_request_params)
       
       d = DateTime.now
-      blood_request.code = d.strftime("%Y%m%d%H%M")
+      blood_request.code = d.strftime("%Y%m%d%H%M%s")
       
       if blood_request.save
         render json: serialize_blood_request(blood_request.id)
@@ -79,6 +79,11 @@ module Api
     def close
       bloodRequest = BloodRequest.find(params[:id])
       bloodRequest.update is_closed: true
+    end
+
+    def reOpen
+      bloodRequest = BloodRequest.find(params[:id])
+      bloodRequest.update is_closed: false
     end
   
     def destroy
