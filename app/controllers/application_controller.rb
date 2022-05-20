@@ -10,6 +10,10 @@ class ApplicationController < ActionController::API
         end
     end
 
+    def to_boolean(s)
+        s and !!s.match(/^(true|t|yes|y|1)$/i)
+    end
+
     protected
 
     def configure_permitted_parameters
