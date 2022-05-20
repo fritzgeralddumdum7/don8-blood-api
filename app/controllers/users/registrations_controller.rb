@@ -23,9 +23,26 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    byebug
+    user = User.find(current_user.id)
+    if user.update(user_params)
+      render_json_api_response(user)
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(
+      :firstname,
+      :lastname,
+      :middlename,
+      :birthday,
+      :city_municipality_id,
+      :address
+    )
+  end
 
   # DELETE /resource
   # def destroy
