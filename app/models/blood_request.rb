@@ -36,6 +36,6 @@ class BloodRequest < ApplicationRecord
     INNER JOIN city_municipalities ON city_municipalities.id = organizations.city_municipality_id
     INNER JOIN provinces ON provinces.id = city_municipalities.province_id
     LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id
-    ORDER BY blood_requests.status DESC, blood_requests.date_time "
+    ORDER BY blood_requests.is_closed, blood_requests.date_time "
   end
 end
