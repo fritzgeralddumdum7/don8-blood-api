@@ -68,9 +68,6 @@ module Api
       appointment.update status: 0
     end
 
-    def destroy
-    end
-
     private
     
     def appointment_params
