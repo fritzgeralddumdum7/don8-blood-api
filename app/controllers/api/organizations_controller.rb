@@ -4,6 +4,7 @@ module Api
     
     @@query = "organizations.id,
     organizations.name,
+    organizations.address,
     organization_types.id as organization_type_id,
     organization_types.name as organization_type_name,
     city_municipalities.id as city_municipality_id,
