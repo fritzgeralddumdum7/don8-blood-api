@@ -39,9 +39,12 @@ module Api
     def create
       blood_request = BloodRequest.new(blood_request_params)
       
+      patient = User.find(blood_request_params[:user_id])
+      blood_request.blood_type_id = patient.blood_type_id
+
       d = DateTime.now
-      blood_request.code = d.strftime("%Y%m%d%H%M%s")
-      
+      blood_request.code = d.strftime("%Y%m%d%H%M%s")      
+
       if blood_request.save
         render json: serialize_blood_request(blood_request.id)
       else
