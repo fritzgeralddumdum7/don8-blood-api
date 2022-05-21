@@ -1,30 +1,7 @@
 module Api
   class BloodRequestsController < ApplicationController
-    @@query = "blood_requests.id,
-    blood_requests.code,
-    blood_requests.date_time,
-    blood_requests.user_id,
-    blood_requests.status,
-    users.firstname as patient_name,
-    blood_requests.organization_id,
-    organizations.name as organization_name,
-    city_municipalities.name as city_municipality_name,
-    cases.id as case_id,
-    cases.name as case_name,
-    request_types.id as request_type_id,
-    request_types.name as request_type_name,
-    blood_types.id as blood_type_id,
-    blood_types.name as blood_type_name,
-    blood_requests.is_closed,
-    blood_requests.status,
-    appointments.user_id as donor_id"
-
     def index
-      all_blood_requests = BloodRequest.select(@@query)
-        .joins(:user,:case, :request_type, :blood_type)
-        .joins(:organization => :city_municipality)
-        .joins("LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id")
-        .uniq
+      all_blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody)        
 
       #Requests per blood type and with no appointments for the selected donor yet 
       if get_blood_type_id != nil && get_blood_type_id != 0 && get_user_id != nil && get_user_id != 0
