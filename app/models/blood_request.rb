@@ -4,7 +4,6 @@ class BloodRequest < ApplicationRecord
   belongs_to :organization
   belongs_to :request_type
   belongs_to :blood_type
-  belongs_to :city_municipality
   has_many :appointments
   validates :code, presence: true, uniqueness: true
   validates :date_time, presence: true
