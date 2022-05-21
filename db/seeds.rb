@@ -5,6 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+User.create(firstname: 'Admin', lastname: 'Side', middlename: 'Secret', email: 'admin@gmail.com', password: '123123123', role: 4)
+
 BloodType.create(name:'A+')
 BloodType.create(name:'A-')
 BloodType.create(name:'B+')

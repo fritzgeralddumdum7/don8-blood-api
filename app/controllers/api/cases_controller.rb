@@ -3,5 +3,5 @@ module Api
 		def index
       		render json: CaseSerializer.new(Case.all)
 		end
-  end	
+  	end	
 end
