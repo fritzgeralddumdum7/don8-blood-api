@@ -4,6 +4,7 @@ module Api
     blood_requests.code,
     blood_requests.date_time,
     blood_requests.user_id,
+    blood_requests.status,
     users.firstname as patient_name,
     blood_requests.organization_id,
     organizations.name as organization_name,
@@ -15,6 +16,7 @@ module Api
     blood_types.id as blood_type_id,
     blood_types.name as blood_type_name,
     blood_requests.is_closed,
+    blood_requests.status,
     appointments.user_id as donor_id"
 
     def index
@@ -26,9 +28,11 @@ module Api
 
       #Requests per blood type and with no appointments for the selected donor yet 
       if get_blood_type_id != nil && get_blood_type_id != 0 && get_user_id != nil && get_user_id != 0
-        blood_requests = all_blood_requests.find_all{|obj| obj.blood_type_id == get_blood_type_id && 
+        blood_requests = all_blood_requests.find_all{|obj| 
+          obj.blood_type_id == get_blood_type_id && 
           obj.is_closed == false &&
-          obj.donor_id == nil
+          obj.donor_id == nil &&
+          obj.status == 1
           }
       
       #Requests per city/municipality  
@@ -37,7 +41,7 @@ module Api
       
       #Requests per organization
       elsif get_organization_id != nil && get_organization_id != 0
-        blood_requests = all_blood_requests.find_all{|obj| obj.organization_id == get_organization_id}
+        blood_requests = all_blood_requests.find_all{|obj| obj.organization_id == get_organization_id && obj.status == 1}
 
       #All Requests   
       else
@@ -57,7 +61,7 @@ module Api
       blood_request = BloodRequest.new(blood_request_params)
       
       d = DateTime.now
-      blood_request.code = d.strftime("%Y%m%d%H%M")
+      blood_request.code = d.strftime("%Y%m%d%H%M%s")
       
       if blood_request.save
         render json: serialize_blood_request(blood_request.id)
@@ -79,20 +83,24 @@ module Api
     def close
       bloodRequest = BloodRequest.find(params[:id])
       bloodRequest.update is_closed: true
-    end
-  
-    def destroy
-      blood_request = BloodRequest.find(params[:id])
-      
-      begin
-        blood_request.destroy
-        render json: {status: "Successful"}
-      rescue ActiveRecord::InvalidForeignKey => e
-        render json: {errors: {message: e.class.name}}
-      end
-      
+
+      render json: {status: "Successful"}
     end
 
+    def reOpen
+      bloodRequest = BloodRequest.find(params[:id])
+      bloodRequest.update is_closed: false
+
+      render json: {status: "Successful"}
+    end
+
+    def cancel
+      bloodRequest = BloodRequest.find(params[:id])
+      bloodRequest.update status: 0
+
+      render json: {status: "Successful"}
+    end
+  
     private
 
     def blood_request_params

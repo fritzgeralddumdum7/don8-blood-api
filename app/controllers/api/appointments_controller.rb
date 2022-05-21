@@ -18,11 +18,11 @@ module Api
       
       # All Appointments per user/donor
       elsif get_user_id != nil && get_user_id != 0
-        appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id }
+        appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id && obj.status == 1 }
 
       #All Appointments per org
       elsif get_organization_id !=nil && get_organization_id !=0
-        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id }
+        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.status == 1 }
       else
         appointments = all_appointments
       end
@@ -63,7 +63,9 @@ module Api
       appointment.update is_completed: true
     end
 
-    def destroy
+    def cancel
+      appointment = Appointment.find(params[:id])
+      appointment.update status: 0
     end
 
     private
