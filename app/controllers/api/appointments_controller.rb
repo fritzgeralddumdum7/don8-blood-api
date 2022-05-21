@@ -8,21 +8,30 @@ module Api
       .joins(:blood_request => :case)
       .joins(:user).uniq
       
-      # Completed Appointments per User
-      if get_user_id != nil && get_user_id != 0 && get_is_completed != nil && get_is_completed != 0
-      appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id && obj.is_completed == get_is_completed }
-
-      # Completed Appointments per Org
-      elsif get_organization_id !=nil && get_organization_id !=0 && get_is_completed != nil && get_is_completed != 0
-        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.is_completed == get_is_completed }
+      # Completed Appointments of Donor
+      if get_transaction_type == 'completedappointments_of_donor'
+        appointments = all_appointments.find_all{|obj|
+          obj.user_id == get_user_id &&
+          obj.is_completed == true }
       
-      # All Appointments per user/donor
-      elsif get_user_id != nil && get_user_id != 0
-        appointments = all_appointments.find_all{|obj| obj.user_id == get_user_id && obj.status == 1 }
+      # Completed Appointments of Org
+      elsif get_transaction_type == 'completedappointments_of_org'
+        appointments = all_appointments.find_all{|obj|
+          obj.organization_id == get_organization_id &&
+          obj.is_completed == true }
+      
+      # All Appointments of Donor
+      elsif get_transaction_type == 'allappointments_of_donor'
+        appointments = all_appointments.find_all{|obj|
+          obj.user_id == get_user_id && obj.status == 1
+        }
 
       #All Appointments per org
-      elsif get_organization_id !=nil && get_organization_id !=0
-        appointments = all_appointments.find_all{|obj| obj.organization_id == get_organization_id && obj.status == 1 }
+      elsif get_transaction_type == 'allappointments_of_org'
+        appointments = all_appointments.find_all{|obj|
+          obj.organization_id == get_organization_id && obj.status == 1
+        }
+
       else
         appointments = all_appointments
       end
@@ -77,16 +86,16 @@ module Api
       )
     end
 
+    def get_transaction_type
+      params[:transaction_type]
+    end
+
     def get_user_id
-      params[:user_id].to_i
+      current_user.id
     end
 
     def get_organization_id
-      params[:organization_id].to_i
-    end
-
-    def get_is_completed
-      params[:is_completed].nil? ? nil : to_boolean(params[:is_completed])
+      current_user.organization_id
     end
 
     def serialize_appointment(id)
