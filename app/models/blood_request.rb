@@ -9,7 +9,7 @@ class BloodRequest < ApplicationRecord
   validates :date_time, presence: true
 
   def self.apibody
-    "SELECT blood_requests.id,
+    "SELECT DISTINCT blood_requests.id,
     blood_requests.code,
     blood_requests.date_time,
     blood_requests.user_id,
@@ -25,8 +25,7 @@ class BloodRequest < ApplicationRecord
     blood_types.id as blood_type_id,
     blood_types.name as blood_type_name,
     blood_requests.is_closed,
-    blood_requests.status,
-    appointments.user_id as donor_id
+    blood_requests.status
     FROM blood_requests
     INNER JOIN users ON users.id = blood_requests.user_id
     INNER JOIN cases ON cases.id = blood_requests.case_id
@@ -34,8 +33,7 @@ class BloodRequest < ApplicationRecord
     INNER JOIN blood_types ON blood_types.id = blood_requests.blood_type_id
     INNER JOIN organizations ON organizations.id = blood_requests.organization_id
     INNER JOIN city_municipalities ON city_municipalities.id = organizations.city_municipality_id
-    INNER JOIN provinces ON provinces.id = city_municipalities.province_id
-    LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id"
+    INNER JOIN provinces ON provinces.id = city_municipalities.province_id"
   end
 
   def self.sort

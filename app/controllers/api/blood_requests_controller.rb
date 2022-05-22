@@ -6,7 +6,7 @@ module Api
         blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody + ' ' + 
           'WHERE blood_requests.blood_type_id = ' + get_blood_type_id.to_s + ' AND ' +
           'blood_requests.is_closed = false AND ' +
-          '(appointments.user_id IS NULL OR appointments.user_id <> ' + current_user.id.to_s +  ') AND ' +
+          'blood_requests.id not in (select blood_request_id from appointments where appointments.user_id = ' + current_user.id.to_s + ' and appointments.status = 1 ) AND ' +
           'blood_requests.status = 1 ' +
           BloodRequest.sort)
 
