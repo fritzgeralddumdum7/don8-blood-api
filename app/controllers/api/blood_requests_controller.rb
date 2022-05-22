@@ -1,37 +1,38 @@
 module Api
   class BloodRequestsController < ApplicationController
     def index
-      all_blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody)        
-
       #Requests per blood type and with no appointments for the selected donor yet 
       if get_transaction_type == 'openrequests_for_donor'
-        blood_requests = all_blood_requests.find_all{|obj| 
-          obj.blood_type_id == get_blood_type_id && 
-          obj.is_closed == false &&
-          obj.donor_id == nil &&
-          obj.status == 1
+        blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody + ' ' + 
+          'WHERE blood_requests.blood_type_id = ' + get_blood_type_id.to_s + ' AND ' +
+          'blood_requests.is_closed = false AND ' +
+          '(appointments.user_id IS NULL OR appointments.user_id <> ' + current_user.id.to_s +  ') AND ' +
+          'blood_requests.status = 1 ' +
+          BloodRequest.sort)
+
+        if params[:keyword] != nil
+          blood_requests = blood_requests.find_all{|obj|
+            obj.organization_name.upcase.include? params[:keyword].upcase 
           }
-      
+        end
+
       #Requests per organization          
       elsif get_transaction_type == 'requests_of_org'
-        blood_requests = all_blood_requests.find_all{|obj|
-          obj.organization_id == get_organization_id &&
-          obj.status == 1}
-      
-      #Requests per city/municipality  
-      elsif get_city_municipality_id != nil && get_city_municipality_id != 0
-        blood_requests = all_blood_requests.find_all{|obj| obj.city_municipality_id == get_city_municipality_id}
+        blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody + ' ' + 
+          'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +          
+          'blood_requests.status = 1 ' +
+          BloodRequest.sort)
       
       #All Requests   
       else
-        blood_requests = all_blood_requests        
+        blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody + ' ' + BloodRequest.sort)        
       end  
       
       options={}
       options[:meta] = {total: blood_requests.count}
       render json: BloodRequestSerializer.new(blood_requests)      
     end
-  
+
     def show
       render json: serialize_blood_request(params[:id])
     end
@@ -107,7 +108,7 @@ module Api
     end
 
     def get_organization_id
-      current_user.organization_id #params[:organization_id].to_i
+      current_user.organization_id
     end
 
     def get_user_id

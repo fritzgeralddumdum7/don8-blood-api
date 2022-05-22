@@ -27,7 +27,7 @@ class BloodRequest < ApplicationRecord
     blood_requests.is_closed,
     blood_requests.status,
     appointments.user_id as donor_id
-    from blood_requests
+    FROM blood_requests
     INNER JOIN users ON users.id = blood_requests.user_id
     INNER JOIN cases ON cases.id = blood_requests.case_id
     INNER JOIN request_types ON request_types.id = blood_requests.request_type_id
@@ -35,7 +35,11 @@ class BloodRequest < ApplicationRecord
     INNER JOIN organizations ON organizations.id = blood_requests.organization_id
     INNER JOIN city_municipalities ON city_municipalities.id = organizations.city_municipality_id
     INNER JOIN provinces ON provinces.id = city_municipalities.province_id
-    LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id
-    ORDER BY blood_requests.is_closed, blood_requests.date_time "
+    LEFT JOIN appointments ON appointments.blood_request_id = blood_requests.id"
   end
+
+  def self.sort
+    "ORDER BY blood_requests.is_closed, blood_requests.date_time"
+  end
+
 end

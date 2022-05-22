@@ -1,36 +1,36 @@
 module Api
   class AppointmentsController < ApplicationController
    def index
-      all_appointments = Appointment.select(Appointment.apibody)
-      .joins(:blood_request => :blood_type)
-      .joins(:blood_request => :organization)
-      .joins(:blood_request => :request_type)
-      .joins(:blood_request => :case)
-      .joins(:user).uniq
-      
       # Completed Appointments of Donor
       if get_transaction_type == 'completedappointments_of_donor'
-        appointments = all_appointments.find_all{|obj|
-          obj.user_id == get_user_id &&
-          obj.is_completed == true }
+        appointments = Appointment.find_by_sql(Apppointment.apibody + ' ' +
+        'WHERE appointments.user_id = ' + get_user_id.to_s + ' AND ' +
+        'appointments.is_completed = true ' + 
+        Appointment.sort)        
       
       # Completed Appointments of Org
       elsif get_transaction_type == 'completedappointments_of_org'
-        appointments = all_appointments.find_all{|obj|
-          obj.organization_id == get_organization_id &&
-          obj.is_completed == true }
-      
+        appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
+        'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +
+        'appointments.is_completed = true ' +
+        Appointment.sort
+        )
+     
       # All Appointments of Donor
       elsif get_transaction_type == 'allappointments_of_donor'
-        appointments = all_appointments.find_all{|obj|
-          obj.user_id == get_user_id && obj.status == 1
-        }
+        appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
+        'WHERE appointments.user_id = ' + get_user_id.to_s + ' AND ' +
+        'appointments.status = 1 ' +
+        Appointment.sort
+        )        
 
       #All Appointments per org
       elsif get_transaction_type == 'allappointments_of_org'
-        appointments = all_appointments.find_all{|obj|
-          obj.organization_id == get_organization_id && obj.status == 1
-        }
+        appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
+        'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + 'AND ' +
+        'appointments.status = 1 ' +
+        Appointment.sort
+        )        
 
       else
         appointments = all_appointments
@@ -99,13 +99,7 @@ module Api
     end
 
     def serialize_appointment(id)
-      appointment = Appointment.select(Appointment.apibody)
-      .joins(:blood_request => :blood_type)
-      .joins(:blood_request => :organization)
-      .joins(:blood_request => :request_type)
-      .joins(:blood_request => :case)
-      .joins(:user)
-      .where(:id => id)
+      appointment = Appointment.find_by_sql(Appointment.apibody).find_all{|obj| obj.id == id.to_i}
 
       AppointmentSerializer.new(appointment)
     end
