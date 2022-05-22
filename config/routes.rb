@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get '/profile', to: 'users#profile'
     post '/validate-password', to: 'users#validate_password'
     put '/update-password', to: 'users#update_password'
+    get '/users/dashboard', to: 'users#dashboard'
     resources :blood_types
     resources :request_types
     resources :organization_types
@@ -26,7 +27,7 @@ Rails.application.routes.draw do
     resources :appointments
     resources :city_municipalities
     resources :provinces   
-    resources :users 
+    resources :users
     patch 'blood_requests/:id/close', to: 'blood_requests#close', as: 'close_blood_request'
     patch 'blood_requests/:id/reOpen', to: 'blood_requests#reOpen', as: 'reOpen_blood_request'
     patch 'blood_requests/:id/cancel', to: 'blood_requests#cancel', as: 'cancel_blood_request'
