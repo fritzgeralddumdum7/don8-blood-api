@@ -22,6 +22,12 @@ module Api
           'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +          
           'blood_requests.status = 1 ' +
           BloodRequest.sort)
+        
+        if params[:keyword] != nil
+          blood_requests = blood_requests.find_all{|obj|
+            obj.patient_name.upcase.include? params[:keyword].upcase 
+          }
+        end
       
       #All Requests   
       else

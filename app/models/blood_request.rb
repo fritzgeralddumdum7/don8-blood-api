@@ -14,7 +14,7 @@ class BloodRequest < ApplicationRecord
     blood_requests.date_time,
     blood_requests.user_id,
     blood_requests.status,
-    users.firstname as patient_name,
+    CONCAT(users.firstname, ' ', users.lastname) as patient_name,
     blood_requests.organization_id,
     organizations.name as organization_name,
     city_municipalities.name as city_municipality_name,
@@ -25,7 +25,8 @@ class BloodRequest < ApplicationRecord
     blood_types.id as blood_type_id,
     blood_types.name as blood_type_name,
     blood_requests.is_closed,
-    blood_requests.status
+    blood_requests.status,
+    (SELECT COUNT(a.id) FROM appointments a WHERE a.blood_request_id = blood_requests.id AND a.status = 1) no_of_appointments
     FROM blood_requests
     INNER JOIN users ON users.id = blood_requests.user_id
     INNER JOIN cases ON cases.id = blood_requests.case_id
