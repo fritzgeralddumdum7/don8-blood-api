@@ -14,7 +14,7 @@ class BloodRequest < ApplicationRecord
     blood_requests.date_time,
     blood_requests.user_id,
     blood_requests.status,
-    users.firstname as patient_name,
+    CONCAT(users.firstname, ' ', users.lastname) as patient_name,
     blood_requests.organization_id,
     organizations.name as organization_name,
     city_municipalities.name as city_municipality_name,

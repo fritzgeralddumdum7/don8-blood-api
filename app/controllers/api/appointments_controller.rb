@@ -1,28 +1,19 @@
 module Api
   class AppointmentsController < ApplicationController
    def index
-      # Completed Appointments of Donor
-      if get_transaction_type == 'completedappointments_of_donor'
-        appointments = Appointment.find_by_sql(Apppointment.apibody + ' ' +
-        'WHERE appointments.user_id = ' + get_user_id.to_s + ' AND ' +
-        'appointments.is_completed = true ' + 
-        Appointment.sort)        
-      
-      # Completed Appointments of Org
-      elsif get_transaction_type == 'completedappointments_of_org'
-        appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
-        'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +
-        'appointments.is_completed = true ' +
-        Appointment.sort
-        )
-     
       # All Appointments of Donor
-      elsif get_transaction_type == 'allappointments_of_donor'
+      if get_transaction_type == 'allappointments_of_donor'
         appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
         'WHERE appointments.user_id = ' + get_user_id.to_s + ' AND ' +
         'appointments.status = 1 ' +
         Appointment.sort
-        )        
+        )
+        
+        if params[:keyword] != nil
+          appointments = appointments.find_all{|obj|
+            obj.organization_name.upcase.include? params[:keyword].upcase
+          }
+        end
 
       #All Appointments per org
       elsif get_transaction_type == 'allappointments_of_org'
@@ -30,7 +21,13 @@ module Api
         'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + 'AND ' +
         'appointments.status = 1 ' +
         Appointment.sort
-        )        
+        )    
+        
+        if params[:keyword] != nil
+          appointments = appointments.find_all{|obj|
+            obj.donor_name.upcase.include? params[:keyword].upcase
+          }
+        end
 
       else
         appointments = all_appointments
