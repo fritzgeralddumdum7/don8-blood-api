@@ -1680,3 +1680,10 @@ CityMunicipality.create(name:'Tubo',province_id:102,latitude:17.2567,longitude:1
 CityMunicipality.create(name:'Taganak',province_id:76,latitude:6.0833,longitude:118.3167)
 CityMunicipality.create(name:'Nagbukel',province_id:101,latitude:17.45,longitude:120.55)
 CityMunicipality.create(name:'Maslog',province_id:95,latitude:12.1,longitude:125.1667)
+
+Case.create(name: 'Dengue', description: 'an acute infectious disease caused by a flavivirus (species Dengue virus of the genus Flavivirus), transmitted by aedes mosquitoes, and characterized by headache, severe joint pain, and a rash.')
+Case.create(name: 'Cancer', description: 'a disease caused by an uncontrolled division of abnormal cells in a part of the body.')
+Case.create(name: 'Leukemia', description: 'cancer of the bodys blood-forming tissues, including the bone marrow and the lymphatic system.')
+Case.create(name: 'Organ Transplant', description: 'a medical procedure in which an organ is removed from one body and placed in the body of a recipient, to replace a damaged or missing organ.')
+Case.create(name: 'Major Operation', description: 'involves opening the body, allowing the surgeon access to the area where the work needs to be completed.')
+Case.create(name: 'Vehicular Accident', description: 'accidents include car crashes, truck wrecks, and motorcycle crashes. Regardless of the type of motor vehicle involved, an accident victim has a legal right to pursue compensation from anyone who was at fault.')
