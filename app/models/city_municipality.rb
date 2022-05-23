@@ -1,6 +1,5 @@
 class CityMunicipality < ApplicationRecord
   belongs_to :province
-  belongs_to :user
-  has_one :user
+  has_many :user
   validates :name, presence: true, uniqueness: true
 end
