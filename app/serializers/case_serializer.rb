@@ -1,4 +1,4 @@
 class CaseSerializer
   include JSONAPI::Serializer
-  attributes :id, :name
+  attributes :id, :name, :description
 end
