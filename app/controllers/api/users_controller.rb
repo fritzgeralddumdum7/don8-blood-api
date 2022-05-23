@@ -19,7 +19,17 @@ module Api
         end
           
         def profile
-            render json: { data: current_user, city_municipality: current_user.city_municipality }
+            result = {
+                data: current_user,
+                city_municipality: current_user.city_municipality,
+                blood_type: current_user.blood_type
+            }
+            
+            if (current_user.role === 2)
+                result = { **result, organization: current_user.organization }
+            end
+
+            render json: result
         end
 
         def validate_password
@@ -36,20 +46,48 @@ module Api
         end
 
         def dashboard
-            next_appointment = nil
             result = Hash.new
-            total_requests = BloodRequest
-                .joins(:organization)
-                .where(
-                    :blood_type_id => current_user.blood_type_id,
-                    :status => 1
-                ).count
-            next_appointment = patients_helped(false).order(date_time: :desc).first
-            orgs_near_me = BloodRequest
-                .joins(:organization => :city_municipality)
-                .where(organization: { city_municipality_id: current_user.city_municipality_id }
-                ).distinct.count(:organization_id)
+            if current_user.role == 1
+                result = donor_dashboard
+            elsif current_user.role == 2
+                result = org_dashboard
+            end
 
+            render json: { data: result }
+        end
+
+        private
+
+        def get_role
+            params[:role].to_i
+        end
+
+        def user_params
+            params.require(:user).permit(
+                :new_password,
+                :password
+            )
+        end
+
+        def patients_helped(flag)
+            Appointment.where(
+                :user_id => current_user.id,
+                :is_completed => flag,
+                :status => 1
+            )
+        end
+
+        def org_patients(flag)
+            Appointment
+                .joins(:blood_request)
+                .where(
+                    blood_request: { :organization_id => current_user.organization_id },
+                    :is_completed => flag,
+                    :status => 1
+                )
+        end
+
+        def cases_per_month_stats
             cases = []
             today = DateTime.now
 
@@ -68,6 +106,22 @@ module Api
                     data: stats
                 }
             end
+            cases
+        end
+
+        def donor_dashboard
+            next_appointment = nil
+            result = Hash.new
+            total_requests = BloodRequest
+                .where(
+                    :blood_type_id => current_user.blood_type_id,
+                    :status => 1
+                ).count
+            next_appointment = patients_helped(false).order(date_time: :desc).first
+            orgs_near_me = BloodRequest
+                .joins(:organization => :city_municipality)
+                .where(organization: { city_municipality_id: current_user.city_municipality_id }
+                ).distinct.count(:organization_id)
 
             orgs = Organization.all.count
             orgs = []
@@ -110,31 +164,68 @@ module Api
                 patients_helped: patients_helped(true).count,
                 next_appointment: ,
                 orgs_near_me: orgs_near_me,
-                case_stats: cases,
+                case_stats: cases_per_month_stats,
                 orgs: orgs
             }
 
-            render json: { data: result }
+            result
         end
 
-        private
+        def org_dashboard
+            next_appointment = nil
+            result = Hash.new
+            total_requests = BloodRequest
+                .where(:organization_id => current_user.organization_id).count
+            next_appointment = org_patients(false).order(date_time: :desc).first
 
-        def get_role
-            params[:role].to_i
-        end
+            orgs = Organization.all.count
+            orgs = []
+            Organization.all.each do |org|
+                available_requests = BloodRequest
+                    .joins(:organization)
+                    .where(
+                        :is_closed => false,
+                        :status => 1,
+                        :organization_id => org.id
+                    ).count
 
-        def user_params
-            params.require(:user).permit(
-                :new_password,
-                :password
-            )
-        end
+                total_patients_helped_in_org = Appointment
+                    .joins(:blood_request => :organization)
+                    .where(
+                        :user_id => current_user.id,
+                        :is_completed => true,
+                        blood_request: { organization_id: org.id }
+                    )
 
-        def patients_helped(flag)
-            Appointment.where(
-                :user_id => current_user.id,
-                :is_completed => flag
-            )
+                orgs << {
+                    name: org.name,
+                    address: org.address,
+                    available_requests: available_requests,
+                    patients_helped: total_patients_helped_in_org.count,
+                    last_donation: total_patients_helped_in_org.present? ? total_patients_helped_in_org.last : nil
+                }
+            end
+
+            total_patients = User.where(:role => 3).count
+
+            if next_appointment.present?
+                next_appointment = {
+                    organization_name: "#{next_appointment.user.firstname} #{next_appointment.user.lastname}",
+                    schedule: next_appointment.date_time
+                }
+            end
+
+            result = {
+                total_requests: total_requests,
+                pending_appointments: org_patients(false).count,
+                patients_helped: org_patients(true).count,
+                next_appointment: next_appointment,
+                total_patients: total_patients,
+                case_stats: cases_per_month_stats,
+                orgs: orgs
+            }
+
+            result
         end
     end
 end
