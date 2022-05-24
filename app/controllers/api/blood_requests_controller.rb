@@ -12,7 +12,7 @@ module Api
 
         if params[:keyword] != nil
           blood_requests = blood_requests.find_all{|obj|
-            obj.organization_name.upcase.include? params[:keyword].upcase 
+            (obj.organization_name.upcase.include? params[:keyword].upcase) || (obj.code.include?(params[:keyword]))
           }
         end
 
@@ -25,7 +25,7 @@ module Api
         
         if params[:keyword] != nil
           blood_requests = blood_requests.find_all{|obj|
-            obj.patient_name.upcase.include? params[:keyword].upcase 
+            (obj.patient_name.upcase.include? (params[:keyword].upcase)) || (obj.code.include?(params[:keyword]))
           }
         end
       
