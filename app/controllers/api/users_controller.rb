@@ -120,7 +120,7 @@ module Api
                 for m in (0...12).to_a.reverse do
                     start_date = today.prev_month(m).strftime("%Y-%m-1 00:00:000")
                     end_date = today.prev_month(m).strftime("%Y-%m-#{today.prev_month(m).end_of_month.strftime("%d")} 00:00:000")
-                    total = BloodRequest.where(["created_at >= ? AND created_at <= ? AND case_id = ?", start_date, end_date, _case.id]).count
+                    total = BloodRequest.where(["date_time >= ? AND date_time <= ? AND case_id = ?", start_date, end_date, _case.id]).count
                     stats << total
                 end
 
