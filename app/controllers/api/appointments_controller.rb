@@ -26,6 +26,24 @@ module Api
             (obj.donor_name.upcase.include? params[:keyword].upcase) || (obj.blood_request_code.include?(params[:keyword]))
           }
         end
+      
+      #All Appointments of specific blood request
+      elsif get_transaction_type == 'allappointments_of_bloodrequest'
+        appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
+        'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +
+        'blood_requests.id = ' + params[:blood_request_id] + ' AND ' +
+        'appointments.status = 1 ' +
+        Appointment.sort
+        )    
+        
+        if params[:keyword] != nil
+          appointments = appointments.find_all{|obj|
+            (obj.donor_name.upcase.include? params[:keyword].upcase) || (obj.blood_request_code.include?(params[:keyword]))
+          }
+        end
+
+      else
+        appointments = all_appointments
       end
 
       ids = appointments.map(&:id)
