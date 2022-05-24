@@ -5,8 +5,7 @@ module Api
       if get_transaction_type == 'allappointments_of_donor'
         appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
         'WHERE appointments.user_id = ' + get_user_id.to_s + ' AND ' +
-        'appointments.status = 1 ' +
-        Appointment.sort
+        'appointments.status = 1 '
         )
         
         if params[:keyword] != nil
@@ -19,8 +18,7 @@ module Api
       elsif get_transaction_type == 'allappointments_of_org'
         appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
         'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + 'AND ' +
-        'appointments.status = 1 ' +
-        Appointment.sort
+        'appointments.status = 1 '
         )    
         
         if params[:keyword] != nil
@@ -28,14 +26,17 @@ module Api
             (obj.donor_name.upcase.include? params[:keyword].upcase) || (obj.blood_request_code.include?(params[:keyword]))
           }
         end
-
-      else
-        appointments = all_appointments
       end
+
+      ids = appointments.map(&:id)
+      appointments = Appointment.where(id: ids).order(:is_completed, :date_time)
 
       options={}
       options[:meta] = {total: appointments.count}
-      render json: AppointmentSerializer.new(appointments, options)
+      render json: {
+        **AppointmentSerializer.new(appointments.page(params[:page] || 1), options),
+        total_page: appointments.page(1).total_pages
+      }
     end
   
     def show

@@ -25,8 +25,4 @@ class Appointment < ApplicationRecord
     INNER JOIN cases ON cases.id = blood_requests.case_id
     INNER JOIN users ON users.id = appointments.user_id"
   end
-
-  def self.sort
-    "ORDER BY appointments.is_completed, appointments.date_time"
-  end
 end

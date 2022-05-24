@@ -1,4 +1,34 @@
 class BloodRequestSerializer
   include JSONAPI::Serializer
-  attributes :code, :date_time, :user_id, :patient_name, :case_id, :case_name, :organization_name, :city_municipality_name, :request_type_id, :request_type_name, :blood_type_id, :blood_type_name, :is_closed, :no_of_appointments
+  attributes :code, :date_time, :user_id, :user, :case_id, :request_type_id, :blood_type_id, :is_closed, :organization, :blood_type, :request_type, :case
+
+  def organization
+    object.organization.map do |d|
+      ::OrganizationSerializer.new(d).attributes
+    end
+  end
+
+  def blood_type
+    object.blood_type.map do |d|
+      ::BloodTypeSerializer.new(d).attributes
+    end
+  end
+
+  def request_type
+    object.request_type.map do |d|
+      ::RequestTypeSerializer.new(d).attributes
+    end
+  end
+
+  def case
+    object.case.map do |d|
+      ::CaseSerializer.new(d).attributes
+    end
+  end
+
+  def user
+    object.user.map do |d|
+      ::UserSerializer.new(d).attributes
+    end
+  end
 end

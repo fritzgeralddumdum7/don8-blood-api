@@ -1,4 +1,4 @@
 class CityMunitipalitySerializer
   include JSONAPI::Serializer
-  attributes :id, :name, :province_name
+  attributes :id, :name
 end

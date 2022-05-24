@@ -14,8 +14,14 @@ module Api
               .joins(:blood_type)
               .left_outer_joins(:city_municipality => :province)
               .where(role: get_role)
+
+            ids = all_users.map(&:id)
+            all_users = User.where(id: ids)
       
-            render json: UserSerializer.new(all_users)
+            render json: {
+                **UserSerializer.new(all_users.page(params[:page] || 1)),
+                total_page: all_users.page(1).total_pages
+              }
         end
           
         def profile
@@ -54,6 +60,23 @@ module Api
             end
 
             render json: { data: result }
+        end
+
+        def tally
+            if current_user.role != 4
+                result = Hash.new
+                if current_user.role == 1
+                    result = {
+                        appointments: patients_helped(false).count
+                    }
+                elsif current_user.role == 2
+                    result = {
+                        appointments: org_patients(false).count
+                    }
+                end
+    
+                render json: { data: result }
+            end
         end
 
         private
@@ -112,11 +135,10 @@ module Api
         def donor_dashboard
             next_appointment = nil
             result = Hash.new
-            total_requests = BloodRequest
-                .where(
-                    :blood_type_id => current_user.blood_type_id,
-                    :status => 1
-                ).count
+            total_requests = requests({
+                :blood_type_id => current_user.blood_type_id,
+                :status => 1
+            })
             next_appointment = patients_helped(false).order(date_time: :desc).first
             orgs_near_me = BloodRequest
                 .joins(:organization => :city_municipality)
@@ -174,8 +196,7 @@ module Api
         def org_dashboard
             next_appointment = nil
             result = Hash.new
-            total_requests = BloodRequest
-                .where(:organization_id => current_user.organization_id).count
+            total_requests = requests({ :organization_id => current_user.organization_id })
             next_appointment = org_patients(false).order(date_time: :desc).first
 
             orgs = Organization.all.count
@@ -226,6 +247,10 @@ module Api
             }
 
             result
+        end
+
+        def requests(conditions)
+            BloodRequest.where(conditions).count
         end
     end
 end

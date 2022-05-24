@@ -27,16 +27,18 @@ module Api
           blood_requests = blood_requests.find_all{|obj|
             (obj.patient_name.upcase.include? (params[:keyword].upcase)) || (obj.code.include?(params[:keyword]))
           }
-        end
-      
-      #All Requests   
-      else
-        blood_requests = BloodRequest.find_by_sql(BloodRequest.apibody + ' ' + BloodRequest.sort)        
+        end      
       end  
+
+      ids = blood_requests.map(&:id)
+      blood_requests = BloodRequest.where(id: ids)
       
       options={}
       options[:meta] = {total: blood_requests.count}
-      render json: BloodRequestSerializer.new(blood_requests)      
+      render json: {
+        **BloodRequestSerializer.new(blood_requests.page(get_page || 1)),
+        total_page: blood_requests.page(1).total_pages
+      }
     end
 
     def show
@@ -103,6 +105,10 @@ module Api
 
     def get_transaction_type
       params[:transaction_type]
+    end
+
+    def get_page
+      params[:page]
     end
 
     def get_city_municipality_id
