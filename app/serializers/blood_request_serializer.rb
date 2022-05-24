@@ -2,6 +2,13 @@ class BloodRequestSerializer
   include JSONAPI::Serializer
   attributes :code, :date_time, :user_id, :user, :case_id, :request_type_id, :blood_type_id, :is_closed, :organization, :blood_type, :request_type, :case
 
+  attribute :total_appointments_made_per_request do |object|
+    Appointment.where(
+      :blood_request_id => object.id,
+      :status => 1
+    ).count
+  end
+
   def organization
     object.organization.map do |d|
       ::OrganizationSerializer.new(d).attributes
