@@ -28,14 +28,17 @@ module Api
             obj.donor_name.upcase.include? params[:keyword].upcase
           }
         end
-
-      else
-        appointments = all_appointments
       end
+
+      ids = appointments.map(&:id)
+      appointments = Appointment.where(id: ids)
 
       options={}
       options[:meta] = {total: appointments.count}
-      render json: AppointmentSerializer.new(appointments, options)
+      render json: {
+        **AppointmentSerializer.new(appointments.page(params[:page] || 1), options),
+        total_page: appointments.page(1).total_pages
+      }
     end
   
     def show

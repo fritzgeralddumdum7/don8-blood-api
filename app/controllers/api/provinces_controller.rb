@@ -3,7 +3,7 @@ module Api
     skip_before_action :authenticate_user!
     
     def index
-      provinces = Province.select("id, name as province_name")
+      provinces = Province.select("id, name")
 
       render json: ProvinceSerializer.new(provinces)
     end

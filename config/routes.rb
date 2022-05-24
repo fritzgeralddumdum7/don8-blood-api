@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post '/validate-password', to: 'users#validate_password'
     put '/update-password', to: 'users#update_password'
     get '/users/dashboard', to: 'users#dashboard'
+    get '/users/tally', to: 'users#tally'
     resources :blood_types
     resources :request_types
     resources :organization_types
