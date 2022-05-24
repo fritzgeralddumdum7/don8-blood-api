@@ -32,8 +32,7 @@ module Api
         appointments = Appointment.find_by_sql(Appointment.apibody + ' ' +
         'WHERE blood_requests.organization_id = ' + get_organization_id.to_s + ' AND ' +
         'blood_requests.id = ' + params[:blood_request_id] + ' AND ' +
-        'appointments.status = 1 ' +
-        Appointment.sort
+        'appointments.status = 1 '
         )    
         
         if params[:keyword] != nil
@@ -41,9 +40,6 @@ module Api
             (obj.donor_name.upcase.include? params[:keyword].upcase) || (obj.blood_request_code.include?(params[:keyword]))
           }
         end
-
-      else
-        appointments = all_appointments
       end
 
       ids = appointments.map(&:id)
