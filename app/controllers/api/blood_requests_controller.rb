@@ -31,7 +31,7 @@ module Api
       end  
 
       ids = blood_requests.map(&:id)
-      blood_requests = BloodRequest.where(id: ids)
+      blood_requests = BloodRequest.where(id: ids).order(:date_time => :desc)
       
       options={}
       options[:meta] = {total: blood_requests.count}
